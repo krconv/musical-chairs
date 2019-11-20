@@ -8,37 +8,43 @@ from musical_chairs import download, parse
 class CourseFetcher:
     _parser = attr.ib(factory=parse.Parser)
     _downloader = attr.ib(factory=download.CoursePageDownloader)
-    _last_open_seat_count = attr.ib()
+    _details = attr.ib(default=None)
+    _old_details = attr.ib(default=None)
 
-    def fetch_name(self):
+    def fetch_updates(self):
         try:
             course_page = self._downloader.download_course_page()
-            return self._parser.parse_name(course_page)
+            details = CourseDetails(
+                name=self._parser.parse_name(course_page),
+                open_seats=self._parser.parse_open_seat_count(course_page),
+            )
+            self._old_details = self._details
+            self._details = details
         except download.DownloadError as error:
             raise FetchError() from error
         except parse.ParseError as error:
             raise FetchError() from error
 
-    @_last_open_seat_count.default
-    def fetch_open_seat_count(self):
-        course_page = self._downloader.download_course_page()
-        try:
-            return self._parser.parse_open_seat_count(course_page)
-        except download.DownloadError as error:
-            raise FetchError() from error
-        except parse.ParseError as error:
-            raise FetchError() from error
+    def get_name(self):
+        return self._details.name
 
-    def get_last_open_seat_count(self):
-        return self._last_open_seat_count
+    def get_open_seat_count(self):
+        return self._details.open_seats
 
-    def mark_open_seat_count_processed(self):
-        self._last_open_seat_count = self.fetch_open_seat_count()
+    def get_old_open_seat_count(self):
+        return self._old_details.open_seats
 
-    def fetch_open_seat_count_changed(self):
-        last_seat_count = self._last_open_seat_count
-        seat_count = self.fetch_open_seat_count()
-        return last_seat_count != seat_count
+    def is_open_seat_count_changed(self):
+        if not (self._old_details and self._details):
+            return False
+
+        return self._old_details.open_seats != self._details.open_seats
+
+
+@attr.s
+class CourseDetails:
+    name = attr.ib()
+    open_seats = attr.ib()
 
 
 class FetchError(Exception):

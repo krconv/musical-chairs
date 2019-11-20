@@ -12,5 +12,8 @@ class Scheduler:
     def schedule_repeating(self, callback):
         schedule.every(self._poll_interval).seconds.do(callback)
 
+    def run_all(self):
+        schedule.run_all()
+
     def run_pending(self):
         schedule.run_pending()

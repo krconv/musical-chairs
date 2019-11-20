@@ -30,9 +30,9 @@ class Alerter:
 
     def _build_alert_message_for_open_seat_count_changed(self, course_fetcher):
         return (
-            f'"{course_fetcher.fetch_name()}" now has '
-            f"{course_fetcher.fetch_open_seat_count()} open seats "
-            f"(was {course_fetcher.get_last_open_seat_count()} seats)"
+            f'"{course_fetcher.get_name()}" now has '
+            f"{course_fetcher.get_open_seat_count()} open seats "
+            f"(was {course_fetcher.get_old_open_seat_count()} seats)"
         )
 
     @ratelimit.limits(calls=1, period=settings.AWS_SNS_COOLDOWN)
