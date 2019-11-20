@@ -22,7 +22,7 @@ class CourseFetcher:
     def get_last_open_seat_count(self):
         return self._last_open_seat_count
 
-    def update_last_open_seat_count(self):
+    def mark_open_seat_count_processed(self):
         self._last_open_seat_count = self.fetch_open_seat_count()
 
     def fetch_open_seat_count_changed(self):

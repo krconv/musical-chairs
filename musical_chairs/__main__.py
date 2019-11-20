@@ -19,7 +19,7 @@ def _alert_if_course_seats_changed(course_fetcher, alerter):
     seats_changed = course_fetcher.fetch_open_seat_count_changed()
     if seats_changed:
         alerter.alert_that_open_seat_count_changed(course_fetcher)
-    course_fetcher.update_last_open_seat_count()
+    course_fetcher.mark_open_seat_count_processed()
 
 
 def _run_forever(scheduler):
