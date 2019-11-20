@@ -11,13 +11,23 @@ class CourseFetcher:
     _last_open_seat_count = attr.ib()
 
     def fetch_name(self):
-        course_page = self._downloader.download_course_page()
-        return self._parser.parse_name(course_page)
+        try:
+            course_page = self._downloader.download_course_page()
+            return self._parser.parse_name(course_page)
+        except download.DownloadError as error:
+            raise FetchError() from error
+        except parse.ParseError as error:
+            raise FetchError() from error
 
     @_last_open_seat_count.default
     def fetch_open_seat_count(self):
         course_page = self._downloader.download_course_page()
-        return self._parser.parse_open_seat_count(course_page)
+        try:
+            return self._parser.parse_open_seat_count(course_page)
+        except download.DownloadError as error:
+            raise FetchError() from error
+        except parse.ParseError as error:
+            raise FetchError() from error
 
     def get_last_open_seat_count(self):
         return self._last_open_seat_count
@@ -29,3 +39,7 @@ class CourseFetcher:
         last_seat_count = self._last_open_seat_count
         seat_count = self.fetch_open_seat_count()
         return last_seat_count != seat_count
+
+
+class FetchError(Exception):
+    pass

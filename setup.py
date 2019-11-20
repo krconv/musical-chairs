@@ -13,6 +13,7 @@ setup(
         "beautifulsoup4",
         "boto3",
         "cachetools",
+        "loguru",
         "python-dotenv",
         "ratelimit",
         "requests",

@@ -1,4 +1,5 @@
 import attr
+from loguru import logger
 import schedule
 
 from musical_chairs import settings

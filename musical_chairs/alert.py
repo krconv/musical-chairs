@@ -1,5 +1,6 @@
 import attr
 import boto3
+from loguru import logger
 import ratelimit
 
 from musical_chairs import settings
@@ -23,8 +24,9 @@ class Alerter:
         message = self._build_alert_message_for_open_seat_count_changed(course_fetcher)
         try:
             self._send_message(message)
+            logger.info("Sent an alert about the open seat count change.")
         except ratelimit.RateLimitException:
-            print("Not alerting to avoid exceeding rate limit.")
+            logger.warning("An alert was not sent due to a configured rate limit!")
 
     def _build_alert_message_for_open_seat_count_changed(self, course_fetcher):
         return (

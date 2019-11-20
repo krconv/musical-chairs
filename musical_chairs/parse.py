@@ -8,7 +8,10 @@ import bs4
 class Parser:
     def parse_name(self, course_page):
         parsed_page = self._parse_page(course_page)
-        return self._find_name(parsed_page)
+        try:
+            return self._find_name(parsed_page)
+        except AttributeError as error:
+            raise ParseError() from error
 
     def _find_name(self, parsed_page):
         results = parsed_page.find(class_="title")
@@ -17,7 +20,10 @@ class Parser:
 
     def parse_open_seat_count(self, course_page):
         parsed_page = self._parse_page(course_page)
-        return self._find_open_seat_count(parsed_page)
+        try:
+            return self._find_open_seat_count(parsed_page)
+        except AttributeError as error:
+            raise ParseError() from error
 
     def _find_open_seat_count(self, parsed_page):
         results = parsed_page.find(text="Enrolled/Seats:")
@@ -27,3 +33,7 @@ class Parser:
 
     def _parse_page(self, page):
         return bs4.BeautifulSoup(page, "html.parser")
+
+
+class ParseError(Exception):
+    pass
