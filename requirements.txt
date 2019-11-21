@@ -2,7 +2,7 @@ attrs==19.*
 beautifulsoup4==4.*
 boto3==1.*
 cachetools==3.*
-loguru=0.*
+loguru==0.*
 python-dotenv==0.*
 ratelimit==2.*
 requests==2.*
