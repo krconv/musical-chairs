@@ -35,7 +35,7 @@ class Alerter:
             f"(was {course_fetcher.get_old_open_seat_count()} seats)"
         )
 
-    @ratelimit.limits(calls=1, period=settings.AWS_SNS_COOLDOWN)
+    @ratelimit.limits(calls=settings.AWS_SNS_LIMIT, period=settings.AWS_SNS_COOLDOWN)
     def _send_message(self, message):
         self._sns_client.publish(
             TopicArn=self._sns_topic, Message=message,
